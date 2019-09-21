@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>School of Net - Vue.js - Campeonato Brasileiro 2018</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style type="text/css">
+            .escudo {
+                width: 30px;
+                height: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app" class="container">
+
+            <titulo></titulo>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" @click="criarNovoJogo">Novo Jogo</button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12" v-show="visao != 'tabela'">
+                    <novo-jogo :time-casa="timeCasa" :time-fora="timeFora" @fim-jogo="showTabela($event)"></novo-jogo>
+                </div>
+                <div class="col-md-12" v-show="visao === 'tabela'">
+                    <tabela-clubes :times="times"></tabela-clubes>
+                </div>
+            </div>
+
+
+            
+
+        </div>
+
+         <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+        <script src="time.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
+
+<!--  Data binding Programação --- HTML -->
+<!--  One way data binding -->
