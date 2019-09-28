@@ -114,7 +114,7 @@ Vue.component('modal',{
 
     props: ['timeCasa', 'timeFora'],
     template: `
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -153,11 +153,11 @@ Vue.component('modal',{
     methods: {
 
         show(){
-            $('#exampleModal').modal('show');
+            $(this.$el).modal('show');
         },
 
         close(){
-            $('#exampleModal').modal('hide');
+            $(this.$el).modal('hide');
         },
 
         fimJogo(){
