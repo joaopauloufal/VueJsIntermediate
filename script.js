@@ -162,9 +162,17 @@ Vue.component('titulo', {
 
     template: `
         <div>
-            <h1>Campeonato Brasileiro - Série A</h1>
+            <h1 @click="clique">Campeonato Brasileiro - Série A</h1>
         </div>
-    `
+    `,
+
+    methods: {
+
+        clique(){
+            console.log(this.$parent.$parent.param1);
+        }
+
+    }
 
 });
 
@@ -303,6 +311,9 @@ new Vue({
 
     el: "#app",
     //template: '<my-app></my-app>',
+    data: {
+        param1: 'valor1'
+    }
 
 
 });
