@@ -10,14 +10,11 @@ Vue.component('my-app',{
             <titulo></titulo>
             <div class="row">
                 <div class="col-md-12">
-                    <novo-jogo :times="times" @novo-jogo="showPlacar($event)"></novo-jogo>
+                    <novo-jogo :times="times"></novo-jogo>
                 </div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-12" v-show="visao != 'tabela'">
-                    <placar :time-casa="timeCasa" :time-fora="timeFora" @fim-jogo="showTabela($event)"></placar>
-                </div>
                 <div class="col-md-12" v-show="visao === 'tabela'">
                     <tabela-clubes :times="times"></tabela-clubes>
                 </div>
@@ -70,12 +67,17 @@ Vue.component('my-app',{
 Vue.component('novo-jogo',{
 
     template: `
-        <div>
-            <button class="btn btn-primary" @click="criarNovoJogo">Novo Jogo</button>
-        </div>
+    <div>
+        <button type="button" class="btn btn-primary" @click="criarNovoJogo" data-toggle="modal" data-target="#exampleModal">
+            Novo Jogo
+        </button>
+        <modal :time-casa="timeCasa" :time-fora="timeFora"></modal>
+    </div>
     `,
     data(){
         return {
+            timeCasa: null,
+            timeFora: null,
             times: this.timesColecao
         }
     },
@@ -91,9 +93,68 @@ Vue.component('novo-jogo',{
 
             // var timeCasa = this.$root.times[indiceCasa];
             // var timeFora = this.$root.times[indiceFora];
-            var timeCasa = this.timesColecao[indiceCasa];
-            var timeFora = this.timesColecao[indiceFora];
-            this.$emit('novo-jogo', {timeCasa, timeFora});
+            //var timeCasa = this.timesColecao[indiceCasa];
+            //var timeFora = this.timesColecao[indiceFora];
+
+            this.timeCasa = this.timesColecao[indiceCasa];
+            this.timeFora = this.timesColecao[indiceFora];
+
+            //this.$emit('novo-jogo', {timeCasa, timeFora});
+
+        },
+
+    }
+
+});
+
+Vue.component('modal',{
+
+    props: ['timeCasa', 'timeFora'],
+    template: `
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <input type="text" class="form-control col-md-1" v-model="golsCasa">
+                        <clube :time="timeCasa" invertido="true" v-if="timeCasa"></clube>
+                        <span>X</span>
+                        <clube :time="timeFora"  v-if="timeFora"></clube>
+                        <input type="text" class="form-control col-md-1" v-model="golsFora">                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @click="fimJogo" data-dismiss="modal">Fim de Jogo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    `,
+
+    data(){
+
+        return {
+            golsCasa : 0,
+            golsFora: 0
+        }
+
+    },
+
+    methods: {
+
+        fimJogo(){
+
+            var golsMarcados = parseInt(this.golsCasa);
+            var golsSofridos = parseInt(this.golsFora);
+            this.timeCasa.fimJogo(this.timeFora, golsMarcados, golsSofridos);
+            this.$emit('fim-jogo', {golsCasa : this.golsCasa, golsFora: this.golsFora});
 
         },
 
@@ -116,9 +177,9 @@ Vue.component('placar', {
     template: `
         <form class="form-inline">
             <input type="text" class="form-control col-md-1" v-model="golsCasa">
-            <clube :time="timeCasa" v-if="timeCasa"></clube>
+            <clube :time="timeCasa" :invertido="true" v-if="timeCasa"></clube>
             <span>X</span>
-            <clube :time="timeFora" :invertido="true" v-if="timeFora"></clube>
+            <clube :time="timeFora"  v-if="timeFora"></clube>
             <input type="text" class="form-control col-md-1" v-model="golsFora">
             <button type="button" class="btn btn-primary" @click="fimJogo">Fim de Jogo</button>
         </form>
@@ -175,31 +236,6 @@ Vue.component('clube', {
 
 });
 
-Vue.component('modal',{
-
-    template: `
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    `
-
-});
 
 
 Vue.component('clubes-libertadores', {
