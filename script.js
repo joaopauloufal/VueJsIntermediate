@@ -68,10 +68,10 @@ Vue.component('novo-jogo',{
 
     template: `
     <div>
-        <button type="button" class="btn btn-primary" @click="criarNovoJogo" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="btn btn-primary" @click="criarNovoJogo">
             Novo Jogo
         </button>
-        <modal :time-casa="timeCasa" :time-fora="timeFora"></modal>
+        <modal :time-casa="timeCasa" :time-fora="timeFora" ref="modal"></modal>
     </div>
     `,
     data(){
@@ -87,7 +87,7 @@ Vue.component('novo-jogo',{
     methods: {
 
         criarNovoJogo(){
-
+            console.log(this.$refs);
             var indiceCasa = Math.floor(Math.random() * 20);
             var indiceFora = Math.floor(Math.random() * 20);
 
@@ -98,6 +98,9 @@ Vue.component('novo-jogo',{
 
             this.timeCasa = this.timesColecao[indiceCasa];
             this.timeFora = this.timesColecao[indiceFora];
+
+            var modal = this.$refs.modal;
+            modal.show();
 
             //this.$emit('novo-jogo', {timeCasa, timeFora});
 
