@@ -131,7 +131,7 @@ Vue.component('modal',{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" @click="fimJogo" data-dismiss="modal">Fim de Jogo</button>
+                    <button type="button" class="btn btn-primary" @click="fimJogo">Fim de Jogo</button>
                 </div>
             </div>
         </div>
@@ -149,12 +149,22 @@ Vue.component('modal',{
 
     methods: {
 
+        show(){
+            $('#exampleModal').modal('show');
+        },
+
+        close(){
+            $('#exampleModal').modal('hide');
+        },
+
         fimJogo(){
 
             var golsMarcados = parseInt(this.golsCasa);
             var golsSofridos = parseInt(this.golsFora);
             this.timeCasa.fimJogo(this.timeFora, golsMarcados, golsSofridos);
-            this.$emit('fim-jogo', {golsCasa : this.golsCasa, golsFora: this.golsFora});
+            //this.$emit('fim-jogo', {golsCasa : this.golsCasa, golsFora: this.golsFora});
+            // TODO Ajax
+            this.close();
 
         },
 
