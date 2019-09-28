@@ -28,30 +28,7 @@ Vue.component('my-app',{
     data(){
 
         return {
-
-            times : [
-                new Time('palmeiras', 'assets/palmeiras_60x60.png'),
-                new Time('Internacional', 'assets/internacional_60x60.png'),
-                new Time('Flamengo', 'assets/flamengo_60x60.png'),
-                new Time('Atlético-MG', 'assets/atletico_mg_60x60.png'),
-                new Time('Santos', 'assets/santos_60x60.png'),
-                new Time('Botafogo', 'assets/botafogo_60x60.png'),
-                new Time('Atlético-PR', 'assets/atletico-pr_60x60.png'),
-                new Time('Corinthians', 'assets/corinthians_60x60.png'),
-                new Time('Grêmio', 'assets/gremio_60x60.png'),
-                new Time('Fluminense', 'assets/fluminense_60x60.png'),
-                new Time('Bahia', 'assets/bahia_60x60.png'),
-                new Time('Chapecoense', 'assets/chapecoense_60x60.png'),
-                new Time('São Paulo', 'assets/sao_paulo_60x60.png'),
-                new Time('Cruzeiro', 'assets/cruzeiro_60x60.png'),
-                new Time('Sport', 'assets/sport_60x60.png'),
-                new Time('Ceará', 'assets/ceara_60x60.png'),
-                new Time('Vitória', 'assets/vitoria_60x60.png'),
-                new Time('Vasco', 'assets/vasco_60x60.png'),
-                new Time('América-MG', 'assets/america_mg_60x60.png'),
-                new Time('Paraná', 'assets/parana_60x60.png'),
-                
-            ],
+            times: [],
             timeCasa: null,
             timeFora: null,
             visao : 'tabela',
@@ -107,8 +84,8 @@ Vue.component('novo-jogo',{
             var indiceCasa = Math.floor(Math.random() * 20);
             var indiceFora = Math.floor(Math.random() * 20);
 
-            var timeCasa = this.times[indiceCasa];
-            var timeFora = this.times[indiceFora];
+            var timeCasa = this.$root.times[indiceCasa];
+            var timeFora = this.$root.times[indiceFora];
             this.$emit('novo-jogo', {timeCasa, timeFora});
 
         },
@@ -182,7 +159,9 @@ Vue.component('clube', {
         <div style="display:flex; flex-direction: row">
             <img :src="time.escudo" alt="" class="escudo" style="{order: invertido == 'true'? 2 : 1}">
             <span :style="{order: invertido == 'true'? 1 : 2}">{{time.nome | ucwords}}</span>
+            {{$root.param1}}
         </div>
+        
     `,
 
 
@@ -287,7 +266,7 @@ Vue.component('tabela-clubes', {
 
         timesFiltrados(){
             console.log('ordenou', this.ordem);
-            var times = _.orderBy(this.times, this.ordem.colunas, this.ordem.orientacao);
+            var times = _.orderBy(this.$root.times, this.ordem.colunas, this.ordem.orientacao);
             var self = this;
             return _.filter(times, function(time){
                 var busca = self.busca.toLowerCase();
@@ -312,7 +291,30 @@ new Vue({
     el: "#app",
     //template: '<my-app></my-app>',
     data: {
-        param1: 'valor1'
+        param1: 'valor1',
+        times : [
+            new Time('palmeiras', 'assets/palmeiras_60x60.png'),
+            new Time('Internacional', 'assets/internacional_60x60.png'),
+            new Time('Flamengo', 'assets/flamengo_60x60.png'),
+            new Time('Atlético-MG', 'assets/atletico_mg_60x60.png'),
+            new Time('Santos', 'assets/santos_60x60.png'),
+            new Time('Botafogo', 'assets/botafogo_60x60.png'),
+            new Time('Atlético-PR', 'assets/atletico-pr_60x60.png'),
+            new Time('Corinthians', 'assets/corinthians_60x60.png'),
+            new Time('Grêmio', 'assets/gremio_60x60.png'),
+            new Time('Fluminense', 'assets/fluminense_60x60.png'),
+            new Time('Bahia', 'assets/bahia_60x60.png'),
+            new Time('Chapecoense', 'assets/chapecoense_60x60.png'),
+            new Time('São Paulo', 'assets/sao_paulo_60x60.png'),
+            new Time('Cruzeiro', 'assets/cruzeiro_60x60.png'),
+            new Time('Sport', 'assets/sport_60x60.png'),
+            new Time('Ceará', 'assets/ceara_60x60.png'),
+            new Time('Vitória', 'assets/vitoria_60x60.png'),
+            new Time('Vasco', 'assets/vasco_60x60.png'),
+            new Time('América-MG', 'assets/america_mg_60x60.png'),
+            new Time('Paraná', 'assets/parana_60x60.png'),
+            
+        ],
     }
 
 
