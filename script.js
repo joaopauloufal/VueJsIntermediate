@@ -71,7 +71,7 @@ Vue.component('novo-jogo',{
         <button type="button" class="btn btn-primary" @click="criarNovoJogo">
             Novo Jogo
         </button>
-        <modal :time-casa="timeCasa" :time-fora="timeFora" ref="modal"></modal>
+        <placar-modal :time-casa="timeCasa" :time-fora="timeFora" ref="modal"></placar-modal>
     </div>
     `,
     data(){
@@ -100,7 +100,8 @@ Vue.component('novo-jogo',{
             this.timeFora = this.timesColecao[indiceFora];
 
             var modal = this.$refs.modal;
-            modal.show();
+            console.log(modal);
+            modal.showModal();
 
             //this.$emit('novo-jogo', {timeCasa, timeFora});
 
@@ -110,32 +111,81 @@ Vue.component('novo-jogo',{
 
 });
 
-Vue.component('modal',{
+Vue.component('placar-modal', {
 
     props: ['timeCasa', 'timeFora'],
+    template: `
+    <modal ref="modal">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="form-inline">
+                <input type="text" class="form-control col-md-1" v-model="golsCasa">
+                <clube :time="timeCasa" invertido="true" v-if="timeCasa"></clube>
+                <span>X</span>
+                <clube :time="timeFora"  v-if="timeFora"></clube>
+                <input type="text" class="form-control col-md-1" v-model="golsFora">                        
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" @click="fimJogo">Fim de Jogo</button>
+        </div>
+    </modal>
+    `,
+
+    data(){
+
+        return {
+            golsCasa : 0,
+            golsFora: 0
+        }
+
+    },
+
+    methods: {
+
+        showModal(){
+            this.getModal().show();
+        },
+
+        closeModal(){
+            this.getModal().close();
+        },
+
+        getModal(){
+            return this.$refs.modal;
+        },
+
+        fimJogo(){
+
+            var golsMarcados = parseInt(this.golsCasa);
+            var golsSofridos = parseInt(this.golsFora);
+            this.timeCasa.fimJogo(this.timeFora, golsMarcados, golsSofridos);
+            //this.$emit('fim-jogo', {golsCasa : this.golsCasa, golsFora: this.golsFora});
+            // TODO Ajax
+            this.closeModal();
+
+        },
+
+    }
+
+});
+
+Vue.component('modal',{
+
+    
     template: `
     <div class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline">
-                        <input type="text" class="form-control col-md-1" v-model="golsCasa">
-                        <clube :time="timeCasa" invertido="true" v-if="timeCasa"></clube>
-                        <span>X</span>
-                        <clube :time="timeFora"  v-if="timeFora"></clube>
-                        <input type="text" class="form-control col-md-1" v-model="golsFora">                        
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" @click="fimJogo">Fim de Jogo</button>
-                </div>
+                <slot>
+                    <p>Texto</p>
+                </slot>
             </div>
         </div>
     </div>
@@ -159,18 +209,6 @@ Vue.component('modal',{
         close(){
             $(this.$el).modal('hide');
         },
-
-        fimJogo(){
-
-            var golsMarcados = parseInt(this.golsCasa);
-            var golsSofridos = parseInt(this.golsFora);
-            this.timeCasa.fimJogo(this.timeFora, golsMarcados, golsSofridos);
-            //this.$emit('fim-jogo', {golsCasa : this.golsCasa, golsFora: this.golsFora});
-            // TODO Ajax
-            this.close();
-
-        },
-
     }
 
 });
