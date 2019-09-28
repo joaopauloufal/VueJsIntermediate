@@ -74,8 +74,13 @@ Vue.component('novo-jogo',{
             <button class="btn btn-primary" @click="criarNovoJogo">Novo Jogo</button>
         </div>
     `,
-
-    props: ['times'],
+    data(){
+        return {
+            times: this.timesColecao
+        }
+    },
+    //props: ['times'],
+    inject: ['timesColecao'],
 
     methods: {
 
@@ -84,8 +89,10 @@ Vue.component('novo-jogo',{
             var indiceCasa = Math.floor(Math.random() * 20);
             var indiceFora = Math.floor(Math.random() * 20);
 
-            var timeCasa = this.$root.times[indiceCasa];
-            var timeFora = this.$root.times[indiceFora];
+            // var timeCasa = this.$root.times[indiceCasa];
+            // var timeFora = this.$root.times[indiceFora];
+            var timeCasa = this.timesColecao[indiceCasa];
+            var timeFora = this.timesColecao[indiceFora];
             this.$emit('novo-jogo', {timeCasa, timeFora});
 
         },
@@ -220,7 +227,7 @@ Vue.component('clubes-rebaixados', {
 });
 
 Vue.component('tabela-clubes', {
-    props : ['times'],
+    //props : ['times'],
     data(){
 
         return {
@@ -229,9 +236,12 @@ Vue.component('tabela-clubes', {
                 colunas : ['pontos', 'gm', 'gs', 'saldo'],
                 orientacao : ['desc', 'desc', 'asc', 'desc']
             },
+            times: this.timesColecao
         }
 
     },
+    inject: ['timesColecao'],
+
     template: `
         <div>
             <input type="text" class="form-control" v-model="busca">
@@ -266,7 +276,7 @@ Vue.component('tabela-clubes', {
 
         timesFiltrados(){
             console.log('ordenou', this.ordem);
-            var times = _.orderBy(this.$root.times, this.ordem.colunas, this.ordem.orientacao);
+            var times = _.orderBy(this.timesColecao, this.ordem.colunas, this.ordem.orientacao);
             var self = this;
             return _.filter(times, function(time){
                 var busca = self.busca.toLowerCase();
@@ -276,11 +286,18 @@ Vue.component('tabela-clubes', {
 
         timesOrdered(){
 
-           return _.orderBy(this.times, this.ordem.colunas, this.ordem.orientacao);
+           //return _.orderBy(this.times, this.ordem.colunas, this.ordem.orientacao);
+           return _.orderBy(this.timesColecao, this.ordem.colunas, this.ordem.orientacao);
 
         }
 
     },
+
+    methods: {
+        ordenar(indice){
+            this.$set(this.ordem.orientacao, indice, this.ordem.orientacao[indice] == 'desc' ? 'asc':'desc');
+        }
+    }
 
 
 });
@@ -290,31 +307,62 @@ new Vue({
 
     el: "#app",
     //template: '<my-app></my-app>',
+    provide(){
+
+        return {
+            
+            timesColecao : [
+                new Time('palmeiras', 'assets/palmeiras_60x60.png'),
+                new Time('Internacional', 'assets/internacional_60x60.png'),
+                new Time('Flamengo', 'assets/flamengo_60x60.png'),
+                new Time('Atlético-MG', 'assets/atletico_mg_60x60.png'),
+                new Time('Santos', 'assets/santos_60x60.png'),
+                new Time('Botafogo', 'assets/botafogo_60x60.png'),
+                new Time('Atlético-PR', 'assets/atletico-pr_60x60.png'),
+                new Time('Corinthians', 'assets/corinthians_60x60.png'),
+                new Time('Grêmio', 'assets/gremio_60x60.png'),
+                new Time('Fluminense', 'assets/fluminense_60x60.png'),
+                new Time('Bahia', 'assets/bahia_60x60.png'),
+                new Time('Chapecoense', 'assets/chapecoense_60x60.png'),
+                new Time('São Paulo', 'assets/sao_paulo_60x60.png'),
+                new Time('Cruzeiro', 'assets/cruzeiro_60x60.png'),
+                new Time('Sport', 'assets/sport_60x60.png'),
+                new Time('Ceará', 'assets/ceara_60x60.png'),
+                new Time('Vitória', 'assets/vitoria_60x60.png'),
+                new Time('Vasco', 'assets/vasco_60x60.png'),
+                new Time('América-MG', 'assets/america_mg_60x60.png'),
+                new Time('Paraná', 'assets/parana_60x60.png'),
+                
+            ],
+
+        }
+
+    },
     data: {
         param1: 'valor1',
-        times : [
-            new Time('palmeiras', 'assets/palmeiras_60x60.png'),
-            new Time('Internacional', 'assets/internacional_60x60.png'),
-            new Time('Flamengo', 'assets/flamengo_60x60.png'),
-            new Time('Atlético-MG', 'assets/atletico_mg_60x60.png'),
-            new Time('Santos', 'assets/santos_60x60.png'),
-            new Time('Botafogo', 'assets/botafogo_60x60.png'),
-            new Time('Atlético-PR', 'assets/atletico-pr_60x60.png'),
-            new Time('Corinthians', 'assets/corinthians_60x60.png'),
-            new Time('Grêmio', 'assets/gremio_60x60.png'),
-            new Time('Fluminense', 'assets/fluminense_60x60.png'),
-            new Time('Bahia', 'assets/bahia_60x60.png'),
-            new Time('Chapecoense', 'assets/chapecoense_60x60.png'),
-            new Time('São Paulo', 'assets/sao_paulo_60x60.png'),
-            new Time('Cruzeiro', 'assets/cruzeiro_60x60.png'),
-            new Time('Sport', 'assets/sport_60x60.png'),
-            new Time('Ceará', 'assets/ceara_60x60.png'),
-            new Time('Vitória', 'assets/vitoria_60x60.png'),
-            new Time('Vasco', 'assets/vasco_60x60.png'),
-            new Time('América-MG', 'assets/america_mg_60x60.png'),
-            new Time('Paraná', 'assets/parana_60x60.png'),
+        // times : [
+        //     new Time('palmeiras', 'assets/palmeiras_60x60.png'),
+        //     new Time('Internacional', 'assets/internacional_60x60.png'),
+        //     new Time('Flamengo', 'assets/flamengo_60x60.png'),
+        //     new Time('Atlético-MG', 'assets/atletico_mg_60x60.png'),
+        //     new Time('Santos', 'assets/santos_60x60.png'),
+        //     new Time('Botafogo', 'assets/botafogo_60x60.png'),
+        //     new Time('Atlético-PR', 'assets/atletico-pr_60x60.png'),
+        //     new Time('Corinthians', 'assets/corinthians_60x60.png'),
+        //     new Time('Grêmio', 'assets/gremio_60x60.png'),
+        //     new Time('Fluminense', 'assets/fluminense_60x60.png'),
+        //     new Time('Bahia', 'assets/bahia_60x60.png'),
+        //     new Time('Chapecoense', 'assets/chapecoense_60x60.png'),
+        //     new Time('São Paulo', 'assets/sao_paulo_60x60.png'),
+        //     new Time('Cruzeiro', 'assets/cruzeiro_60x60.png'),
+        //     new Time('Sport', 'assets/sport_60x60.png'),
+        //     new Time('Ceará', 'assets/ceara_60x60.png'),
+        //     new Time('Vitória', 'assets/vitoria_60x60.png'),
+        //     new Time('Vasco', 'assets/vasco_60x60.png'),
+        //     new Time('América-MG', 'assets/america_mg_60x60.png'),
+        //     new Time('Paraná', 'assets/parana_60x60.png'),
             
-        ],
+        // ],
     }
 
 
